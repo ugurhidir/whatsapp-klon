@@ -1,0 +1,150 @@
+/* Temel sıfırlamalar ve varsayılan ayarlar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Kenar boşluklarının ve padding'in genişliğe dahil edilmesini sağlar */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f0f2f5; /* Hafif gri bir arka plan */
+}
+
+/* Ana kapsayıcıyı Flexbox ile iki sütuna ayırıyoruz */
+.app-container {
+    display: flex; /* Çocuklarını (panelleri) yan yana dizer */
+    height: 100vh; /* Ekran yüksekliğinin tamamını kaplar */
+}
+
+/* Sol Panel Stilleri */
+.sol-panel {
+    width: 350px; /* Sabit bir genişlik veriyoruz */
+    background-color: #ffffff; /* Beyaz arka plan */
+    border-right: 1px solid #d1d7db; /* Sağ tarafa ince bir çizgi */
+    display: flex;
+    flex-direction: column; /* İçindeki elemanları alt alta dizer */
+}
+
+.panel-header {
+    padding: 15px;
+    background-color: #f0f2f5;
+    border-bottom: 1px solid #d1d7db;
+}
+
+.sohbet-listesi {
+    flex-grow: 1; /* Mevcut alanı doldurmasını sağlar */
+    overflow-y: auto; /* Sohbetler sığmazsa kaydırma çubuğu çıkar */
+}
+
+.sohbet-karti {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid #f0f2f5;
+    cursor: pointer; /* Üzerine gelince fare imlecini el yapar */
+}
+
+.sohbet-karti:hover {
+    background-color: #f5f5f5; /* Fare ile üzerine gelince rengi değişir */
+}
+
+.sohbet-karti.aktif {
+    background-color: #e8e8e8; /* "Seçili" olan sohbetin rengi */
+}
+
+.sohbet-isim {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.son-mesaj {
+    font-size: 14px;
+    color: #667781;
+}
+
+
+/* Sağ Panel Stilleri */
+.sag-panel {
+    flex-grow: 1; /* Kalan tüm genişliği kaplar */
+    display: flex;
+    justify-content: center; /* İçeriği yatayda ortalar */
+    align-items: center; /* İçeriği dikeyde ortalar */
+}
+
+.hosgeldin-ekrani {
+    text-align: center;
+    color: #41525d;
+}
+
+.hosgeldin-ekrani h2 {
+    font-size: 28px;
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+.sohbet-ekrani-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column; /* Başlık, mesajlar ve formu alt alta dizer */
+}
+
+.mesajlar-alani {
+    flex-grow: 1; /* Kalan tüm dikey boşluğu kaplar */
+    background-color: #e5ddd5; /* WhatsApp'ın klasik desenli arka planını andıran bir renk */
+    padding: 20px;
+    overflow-y: auto; /* Mesajlar sığmazsa kaydırma çubuğu çıkar */
+    display: flex;
+    flex-direction: column;
+}
+
+.mesaj {
+    max-width: 60%; /* Mesaj baloncuğu genişliği en fazla %60 olsun */
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    width: fit-content; /* İçeriği kadar genişlik kaplasın */
+}
+
+.mesaj p {
+    color: #000;
+}
+
+.mesaj.gelen {
+    background-color: #ffffff; /* Gelen mesajlar beyaz */
+    align-self: flex-start; /* Kendini sola yaslar */
+}
+
+.mesaj.giden {
+    background-color: #d9fdd3; /* Giden mesajlar yeşilimsi */
+    align-self: flex-end; /* Kendini sağa yaslar */
+}
+
+
+.mesaj-yazma-formu {
+    display: flex;
+    padding: 10px;
+    background-color: #f0f2f5;
+    border-top: 1px solid #d1d7db;
+}
+
+.mesaj-yazma-formu input {
+    flex-grow: 1; /* Kalan tüm alanı kaplar */
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 15px;
+    margin-right: 10px;
+}
+
+.mesaj-yazma-formu button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #00a884; /* WhatsApp yeşili */
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.mesaj-yazma-formu button:hover {
+    background-color: #008269;
+}

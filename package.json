@@ -1,0 +1,19 @@
+{
+  "name": "whatsapp-klon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start-app":"electron .",
+    "start-server":"node server/index.js",
+    "start": "concurrently \"npm run start-server\" \"npm run start-app\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "electron": "^37.2.3"
+  }
+}

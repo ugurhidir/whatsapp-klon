@@ -1,0 +1,8 @@
+# Node.js bağımlılık klasörleri
+node_modules/
+/server/node_modules/
+
+# Log dosyaları
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
