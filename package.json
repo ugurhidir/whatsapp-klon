@@ -6,6 +6,7 @@
   "scripts": {
     "start-app":"electron .",
     "start-server":"node server/index.js",
+    "start-client-only":"electron .",
     "start": "concurrently \"npm run start-server\" \"npm run start-app\""
   },
   "keywords": [],
