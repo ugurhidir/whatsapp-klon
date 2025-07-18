@@ -3,13 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>WhatsApp Klonu</title>
-    <!-- Oluşturduğumuz CSS dosyasını HTML'e bağlıyoruz -->
+    <!-- CSS dosyamızı bağlıyoruz -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Tüm uygulamanın ana kapsayıcısı -->
-    <div class="app-container">
+    <!-- ================== YENİ: GİRİŞ EKRANI ================== -->
+    <div class="login-container" id="login-container">
+        <div class="login-form">
+            <h2>WhatsApp Klonuna Hoş Geldiniz</h2>
+            
+            <div class="input-group">
+                <label for="username">Kullanıcı Adı</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="button-group">
+                <button id="register-btn">Kayıt Ol</button>
+                <button id="login-btn">Giriş Yap</button>
+            </div>
+            
+            <p class="status-message" id="status-message"></p>
+        </div>
+    </div>
+    <!-- ================== GİRİŞ EKRANI SONU ================== -->
+
+
+    <!-- Sohbet ekranı artık başlangıçta gizli -->
+    <div class="app-container" id="app-container" style="display: none;">
 
         <!-- Sol Panel (Sohbet Listesi Bölümü) -->
         <div class="sol-panel">
@@ -47,40 +73,33 @@
                 <h2>WhatsApp Klonuna Hoş Geldiniz</h2>
                 <p>Mesajlaşmaya başlamak için sol panelden bir sohbet seçin.</p>
             </div>
-        </div>
-            <!-- Seçili sohbetin gösterileceği ana kapsayıcı -->
-    <div class="sohbet-ekrani-container" id="sohbet-ekrani" style="display: none;">
-        
-        <!-- Sohbet Başlığı -->
-        <header class="panel-header">
-            <p id="aktif-sohbet-ismi">Grup Sohbeti</p> <!-- Bu statik, ileride dinamik olacak -->
-        </header>
 
-        <!-- Mesajların Gösterileceği Alan -->
-        <div class="mesajlar-alani">
-            <!-- Örnek mesajlar -->
-            <div class="mesaj giden">
-                <p>Selam, proje ne durumda?</p>
-            </div>
-            <div class="mesaj gelen">
-                <p>İyi gidiyor, sunumu hazırlıyorum. Ahmet: Tamamdır, bekliyorum.</p>
-            </div>
-             <div class="mesaj giden">
-                <p>Harika!</p>
+            <!-- Seçili sohbetin gösterileceği ana kapsayıcı (başlangıçta gizli) -->
+            <div class="sohbet-ekrani-container" id="sohbet-ekrani" style="display: none;">
+                
+                <!-- Sohbet Başlığı -->
+                <header class="panel-header">
+                    <p id="aktif-sohbet-ismi">Grup Sohbeti</p>
+                </header>
+
+                <!-- Mesajların Gösterileceği Alan -->
+                <div class="mesajlar-alani">
+                    <!-- Örnek mesajlar, artık JS ile dinamik yüklenecek -->
+                </div>
+
+                <!-- Mesaj Yazma Formu -->
+                <form class="mesaj-yazma-formu">
+                    <input type="text" placeholder="Bir mesaj yazın...">
+                    <button>Gönder</button>
+                </form>
+
             </div>
         </div>
-
-        <!-- Mesaj Yazma Formu -->
-        <form class="mesaj-yazma-formu">
-            <input type="text" placeholder="Bir mesaj yazın...">
-            <button>Gönder</button>
-        </form>
 
     </div>
 
-    </div>
+    <!-- Script etiketleri en sonda kalmaya devam ediyor -->
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script src="renderer.js"></script>
-
 </body>
 </html>
