@@ -9,6 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const appContainer = document.getElementById('app-container');
     
     let token = null;
+    let currentUser = null; // Değişkeni en dışta, başlangıçta null olarak tanımla
 
     // Kayıt Ol butonu olayı
     registerBtn.addEventListener('click', async () => {
@@ -53,11 +54,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ username, password }),
             });
             const data = await response.json();
+
             if (response.ok) {
                 token = data.token;
+                // Dışarıdaki currentUser değişkeninin değerini güncelle
+                currentUser = { id: data.userId, username: data.username };
+                
                 loginContainer.style.display = 'none';
                 appContainer.style.display = 'flex';
-                initializeChat(token);
+                initializeChat(token, currentUser);
             } else {
                 statusMessage.textContent = data.message;
             }
@@ -67,14 +72,11 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     // === BÖLÜM 2: SOHBET EKRANI MANTIĞI ===
-    function initializeChat(authToken) {
+     function initializeChat(authToken, user) {
         const socket = io('http://localhost:3000', { auth: { token: authToken } });
 
-        // ====> DÜZELTME: EKSİK ELEMANLAR BURADA YENİDEN SEÇİLİYOR <====
         const hosgeldinEkrani = document.getElementById('hosgeldin-ekrani');
         const sohbetEkrani = document.getElementById('sohbet-ekrani');
-        // ==========================================================
-
         const sohbetKartlari = document.querySelectorAll('.sohbet-karti');
         const aktifSohbetIsmiElementi = document.getElementById('aktif-sohbet-ismi');
         const mesajlarAlani = document.querySelector('.mesajlar-alani');
@@ -85,12 +87,8 @@ window.addEventListener('DOMContentLoaded', () => {
             kart.addEventListener('click', () => {
                 sohbetKartlari.forEach(digerKart => digerKart.classList.remove('aktif'));
                 kart.classList.add('aktif');
-
-                // ====> DÜZELTME: EKSİK KOD BURAYA EKLENİYOR <====
                 hosgeldinEkrani.style.display = 'none';
                 sohbetEkrani.style.display = 'flex';
-                // ===============================================
-
                 const yeniSohbetIsmi = kart.querySelector('.sohbet-isim').innerText;
                 aktifSohbetIsmiElementi.innerText = yeniSohbetIsmi;
                 mesajlarAlani.innerHTML = '';
@@ -103,36 +101,73 @@ window.addEventListener('DOMContentLoaded', () => {
             if (mesajInput.value) {
                 const aktifOda = aktifSohbetIsmiElementi.innerText;
                 const mesajIcerigi = mesajInput.value;
+                // Sunucuya sadece ham bilgiyi gönder
                 socket.emit('chat message', { room: aktifOda, msg: mesajIcerigi });
-                mesajBalonuCiz({ icerik: mesajIcerigi, tip: 'giden' });
+                
+                // Kendi giden mesajımızı kendimiz çiziyoruz
+                mesajBalonuCiz({
+                    icerik: mesajIcerigi,
+                    gonderen: { id: user.id, username: user.username },
+                    zaman: new Date() // Anlık zamanı kullan
+                });
                 mesajInput.value = '';
             }
         });
 
-        socket.on('chat message', (data) => {
+        // Sunucudan gelen CANLI mesaj
+        socket.on('chat message', (mesaj) => {
             const aktifOda = aktifSohbetIsmiElementi.innerText;
-            if (data.room === aktifOda) {
-                mesajBalonuCiz({ icerik: data.msg, tip: 'gelen' });
+            if (mesaj.room === aktifOda) {
+                mesajBalonuCiz(mesaj);
             }
         });
 
+        // Sunucudan gelen GEÇMİŞ mesajlar
         socket.on('room history', (history) => {
-            history.forEach(mesaj => mesajBalonuCiz(mesaj));
+            history.forEach(mesaj => {
+                mesajBalonuCiz(mesaj);
+            });
         });
 
         socket.on('connect_error', (err) => {
             console.error('Socket bağlantı hatası:', err.message);
         });
-        function mesajBalonuCiz(mesaj) {
-        const mesajDiv = document.createElement('div');
-        mesajDiv.classList.add('mesaj', mesaj.tip);
-        const p = document.createElement('p');
-        p.innerText = mesaj.icerik;
-        mesajDiv.appendChild(p);
-        mesajlarAlani.appendChild(mesajDiv);
-        mesajlarAlani.scrollTop = mesajlarAlani.scrollHeight;
-    }
-    }
 
-    
+        // Bu yardımcı fonksiyon artık doğru veri yapısını bekliyor
+        function mesajBalonuCiz(mesaj) {
+            const mesajDiv = document.createElement('div');
+            // 'gonderen' nesnesinin varlığını kontrol et
+            if (!mesaj.gonderen || !mesaj.gonderen.id) {
+                console.error("Hatalı mesaj yapısı:", mesaj);
+                return; // Hatalıysa balonu çizme
+            }
+
+            const tip = mesaj.gonderen.id === user.id ? 'giden' : 'gelen';
+            mesajDiv.classList.add('mesaj', tip);
+
+            if (tip === 'gelen' && mesaj.gonderen.username) {
+                const senderP = document.createElement('p');
+                senderP.classList.add('mesaj-gonderen');
+                senderP.textContent = mesaj.gonderen.username;
+                mesajDiv.appendChild(senderP);
+            }
+
+            const contentP = document.createElement('p');
+            contentP.textContent = mesaj.icerik;
+            mesajDiv.appendChild(contentP);
+
+            if (mesaj.zaman) {
+                const timeP = document.createElement('p');
+                timeP.classList.add('mesaj-zamani');
+                timeP.textContent = new Date(mesaj.zaman).toLocaleTimeString('tr-TR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                mesajDiv.appendChild(timeP);
+            }
+
+            mesajlarAlani.appendChild(mesajDiv);
+            mesajlarAlani.scrollTop = mesajlarAlani.scrollHeight;
+        }
+    }
 });

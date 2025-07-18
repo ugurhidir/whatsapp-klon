@@ -2,155 +2,17 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Kenar boşluklarının ve padding'in genişliğe dahil edilmesini sağlar */
+    box-sizing: border-box;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f0f2f5; /* Hafif gri bir arka plan */
-}
-
-/* Ana kapsayıcıyı Flexbox ile iki sütuna ayırıyoruz */
-.app-container {
-    display: flex; /* Çocuklarını (panelleri) yan yana dizer */
-    height: 100vh; /* Ekran yüksekliğinin tamamını kaplar */
-}
-
-/* Sol Panel Stilleri */
-.sol-panel {
-    width: 350px; /* Sabit bir genişlik veriyoruz */
-    background-color: #ffffff; /* Beyaz arka plan */
-    border-right: 1px solid #d1d7db; /* Sağ tarafa ince bir çizgi */
-    display: flex;
-    flex-direction: column; /* İçindeki elemanları alt alta dizer */
-}
-
-.panel-header {
-    padding: 15px;
     background-color: #f0f2f5;
-    border-bottom: 1px solid #d1d7db;
 }
 
-.sohbet-listesi {
-    flex-grow: 1; /* Mevcut alanı doldurmasını sağlar */
-    overflow-y: auto; /* Sohbetler sığmazsa kaydırma çubuğu çıkar */
-}
-
-.sohbet-karti {
-    display: flex;
-    padding: 15px;
-    border-bottom: 1px solid #f0f2f5;
-    cursor: pointer; /* Üzerine gelince fare imlecini el yapar */
-}
-
-.sohbet-karti:hover {
-    background-color: #f5f5f5; /* Fare ile üzerine gelince rengi değişir */
-}
-
-.sohbet-karti.aktif {
-    background-color: #e8e8e8; /* "Seçili" olan sohbetin rengi */
-}
-
-.sohbet-isim {
-    font-weight: bold;
-    margin-bottom: 4px;
-}
-
-.son-mesaj {
-    font-size: 14px;
-    color: #667781;
-}
-
-
-/* Sağ Panel Stilleri */
-.sag-panel {
-    flex-grow: 1; /* Kalan tüm genişliği kaplar */
-    display: flex;
-    justify-content: center; /* İçeriği yatayda ortalar */
-    align-items: center; /* İçeriği dikeyde ortalar */
-}
-
-.hosgeldin-ekrani {
-    text-align: center;
-    color: #41525d;
-}
-
-.hosgeldin-ekrani h2 {
-    font-size: 28px;
-    font-weight: 300;
-    margin-bottom: 10px;
-}
-.sohbet-ekrani-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column; /* Başlık, mesajlar ve formu alt alta dizer */
-}
-
-.mesajlar-alani {
-    flex-grow: 1; /* Kalan tüm dikey boşluğu kaplar */
-    background-color: #e5ddd5; /* WhatsApp'ın klasik desenli arka planını andıran bir renk */
-    padding: 20px;
-    overflow-y: auto; /* Mesajlar sığmazsa kaydırma çubuğu çıkar */
-    display: flex;
-    flex-direction: column;
-}
-
-.mesaj {
-    max-width: 60%; /* Mesaj baloncuğu genişliği en fazla %60 olsun */
-    padding: 8px 12px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    width: fit-content; /* İçeriği kadar genişlik kaplasın */
-}
-
-.mesaj p {
-    color: #000;
-}
-
-.mesaj.gelen {
-    background-color: #ffffff; /* Gelen mesajlar beyaz */
-    align-self: flex-start; /* Kendini sola yaslar */
-}
-
-.mesaj.giden {
-    background-color: #d9fdd3; /* Giden mesajlar yeşilimsi */
-    align-self: flex-end; /* Kendini sağa yaslar */
-}
-
-
-.mesaj-yazma-formu {
-    display: flex;
-    padding: 10px;
-    background-color: #f0f2f5;
-    border-top: 1px solid #d1d7db;
-}
-
-.mesaj-yazma-formu input {
-    flex-grow: 1; /* Kalan tüm alanı kaplar */
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    padding: 10px 15px;
-    font-size: 15px;
-    margin-right: 10px;
-}
-
-.mesaj-yazma-formu button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #00a884; /* WhatsApp yeşili */
-    color: white;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.mesaj-yazma-formu button:hover {
-    background-color: #008269;
-}
-
-/*Giriş Ekranı*/
-
+/* ======================== */
+/* Giriş Ekranı Stilleri    */
+/* ======================== */
 .login-container {
     display: flex;
     justify-content: center;
@@ -221,5 +83,166 @@ body {
     margin-top: 15px;
     font-size: 14px;
     color: red;
-    min-height: 20px; /* Mesaj yokken bile yer kaplasın */
+    min-height: 20px;
+}
+
+/* ======================== */
+/* Ana Uygulama Stilleri    */
+/* ======================== */
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.sol-panel {
+    width: 350px;
+    background-color: #ffffff;
+    border-right: 1px solid #d1d7db;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    padding: 15px;
+    background-color: #f0f2f5;
+    border-bottom: 1px solid #d1d7db;
+}
+
+.sohbet-listesi {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.sohbet-karti {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid #f0f2f5;
+    cursor: pointer;
+}
+
+.sohbet-karti:hover {
+    background-color: #f5f5f5;
+}
+
+.sohbet-karti.aktif {
+    background-color: #e8e8e8;
+}
+
+.sohbet-isim {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.son-mesaj {
+    font-size: 14px;
+    color: #667781;
+}
+
+.sag-panel {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e5ddd5;
+}
+
+.hosgeldin-ekrani {
+    text-align: center;
+    color: #41525d;
+}
+
+.hosgeldin-ekrani h2 {
+    font-size: 28px;
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+
+.sohbet-ekrani-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mesajlar-alani {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.mesaj {
+    max-width: 60%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
+.mesaj.gelen {
+    background-color: #ffffff;
+    align-self: flex-start;
+}
+
+.mesaj.giden {
+    background-color: #d9fdd3;
+    align-self: flex-end;
+}
+
+.mesaj-yazma-formu {
+    display: flex;
+    padding: 10px;
+    background-color: #f0f2f5;
+    border-top: 1px solid #d1d7db;
+}
+
+.mesaj-yazma-formu input {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 15px;
+    margin-right: 10px;
+}
+
+.mesaj-yazma-formu button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #00a884;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.mesaj-yazma-formu button:hover {
+    background-color: #008269;
+}
+
+/* ======================== */
+/* Mesaj Detay Stilleri     */
+/* ======================== */
+.mesaj-gonderen {
+    font-size: 13px;
+    font-weight: bold;
+    color: #54656f;
+    margin-bottom: 2px;
+}
+
+.mesaj.giden .mesaj-gonderen {
+    display: none;
+}
+
+.mesaj-zamani {
+    font-size: 11px;
+    color: #667781;
+    margin-top: 5px;
+    align-self: flex-end;
+}
+
+.mesaj p:not(.mesaj-zamani) {
+    margin-bottom: 0;
 }
