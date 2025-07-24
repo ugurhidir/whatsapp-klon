@@ -10,27 +10,36 @@
 
     <!-- ================== YENİ: GİRİŞ EKRANI ================== -->
     <div class="login-container" id="login-container">
-        <div class="login-form">
-            <h2>WhatsApp Klonuna Hoş Geldiniz</h2>
-            
-            <div class="input-group">
-                <label for="username">Kullanıcı Adı</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            
-            <div class="input-group">
-                <label for="password">Şifre</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-
-            <div class="button-group">
-                <button id="register-btn">Kayıt Ol</button>
-                <button id="login-btn">Giriş Yap</button>
-            </div>
-            
-            <p class="status-message" id="status-message"></p>
+    <div class="login-form">
+        <h2>Chat-App'e Hoşgeldiniz</h2>
+        
+        <!-- BU INPUT'UN ID'Sİ "username-input-login" OLABİLİR -->
+        <div class="input-group">
+            <label for="username-input-login">Kullanıcı Adı veya E-Mail</label>
+            <input type="text" id="username-input-login" name="username-input-login">
         </div>
+        
+        <!-- BU INPUT'UN ID'Sİ "email-input-register" OLABİLİR -->
+        <div class="input-group">
+            <label for="email-input-register">E-Mail</label>
+            <input type="email" id="email-input-register" name="email-input-register">
+        </div>
+
+        <!-- BU INPUT'UN ID'Sİ "password-input" OLABİLİR -->
+        <div class="input-group">
+            <label for="password-input">Şifre</label>
+            <input type="password" id="password-input" name="password-input">
+        </div>
+
+        <!-- BUTONLARIN ID'LERİ ÇOK ÖNEMLİ -->
+        <div class="button-group">
+            <button id="register-btn">Kayıt Ol</button>
+            <button id="login-btn">Giriş Yap</button>
+        </div>
+        
+        <p class="status-message" id="status-message"></p>
     </div>
+</div>
     <!-- ================== GİRİŞ EKRANI SONU ================== -->
 
 
@@ -96,19 +105,62 @@
         </div>
 
     </div>
-    <!-- ================== YENİ: PROFİL MODAL'I ================== -->
+    <!-- ================== GÜNCELLENMİŞ PROFİL MODAL'I ================== -->
     <div class="modal-overlay" id="profile-modal" style="display: none;">
         <div class="modal-content">
             <h3>Profilim</h3>
+
+            <!-- === Profil Resmi ve Temel Bilgiler === -->
+            <div class="profile-header">
+                <div class="avatar-placeholder" id="avatar-placeholder">
+                    <!-- Avatar resmi buraya gelecek -->
+                     <img id="avatar-preview" src="" alt="Avatar Önizleme" style="display: none;">
+                    <span class="avatar-initials" id="avatar-initials">S</span>
+                </div>
+                <input type="file" id="avatar-input" accept="image/png, image/jpeg" style="display: none;">
+                <div class="header-info">
+                    <div class="input-group">
+                        <label for="fullName-input">Tam Adınız</label>
+                        <input type="text" id="fullName-input" placeholder="Sloan">
+                    </div>
+                     <div class="input-group">
+                        <label for="username-display">Kullanıcı Adı</label>
+                        <input type="text" id="username-display" disabled>
+                    </div>
+                </div>
+            </div>
+
+            <!-- === Hakkımda Bölümü === -->
             <div class="input-group">
                 <label for="about-input">Hakkımda</label>
-                <textarea id="about-input" rows="4"></textarea>
+                <textarea id="about-input" rows="3" placeholder="Merhaba! Bu WhatsApp klonunu kullanıyorum."></textarea>
             </div>
+
+             <!-- === Kişisel Bilgiler Bölümü === -->
+            <div class="profile-details">
+                <div class="input-group">
+                    <label for="city-input">Şehir</label>
+                    <input type="text" id="city-input" placeholder="Bursa">
+                </div>
+                <div class="input-group">
+                    <label for="dob-input">Doğum Tarihi</label>
+                    <input type="date" id="dob-input">
+                </div>
+            </div>
+
+            <!-- === Sosyal Medya Bölümü === -->
+            <h4>Sosyal Medya</h4>
+            <div id="socials-container">
+                <!-- Sosyal medya linkleri JS ile buraya eklenecek -->
+            </div>
+            <button id="add-social-btn" class="add-btn">+</button>
+
+            <!-- === Modal Kontrol Butonları === -->
             <div class="modal-buttons">
+                <p class="status-message" id="profile-status-message"></p>
                 <button id="profile-save-btn">Kaydet</button>
                 <button id="profile-cancel-btn">İptal</button>
             </div>
-             <p class="status-message" id="profile-status-message"></p>
         </div>
     </div>
     <!-- ================== PROFİL MODAL'I SONU ================== -->

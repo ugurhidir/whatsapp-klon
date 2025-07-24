@@ -1,7 +1,8 @@
 window.addEventListener('DOMContentLoaded', () => {
     // === BÖLÜM 1: GİRİŞ EKRANI ELEMANLARI VE OLAYLARI ===
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
+    const usernameInput = document.getElementById('username-input-login');
+    const emailInput = document.getElementById('email-input-register');
+    const passwordInput = document.getElementById('password-input');
     const registerBtn = document.getElementById('register-btn');
     const loginBtn = document.getElementById('login-btn');
     const statusMessage = document.getElementById('status-message');
@@ -74,7 +75,9 @@ window.addEventListener('DOMContentLoaded', () => {
     // === BÖLÜM 2: SOHBET EKRANI MANTIĞI ===
      function initializeChat(authToken, user) {
         const socket = io('http://localhost:3000', { auth: { token: authToken } });
+        
 
+        // === BÖLÜM A: ELEMAN SEÇİMLERİ (DEĞİŞİKLİK YOK) ===
         const hosgeldinEkrani = document.getElementById('hosgeldin-ekrani');
         const sohbetEkrani = document.getElementById('sohbet-ekrani');
         const sohbetKartlari = document.querySelectorAll('.sohbet-karti');
@@ -82,62 +85,174 @@ window.addEventListener('DOMContentLoaded', () => {
         const mesajlarAlani = document.querySelector('.mesajlar-alani');
         const mesajFormu = document.querySelector('.mesaj-yazma-formu');
         const mesajInput = mesajFormu.querySelector('input');
+
+        // === BÖLÜM B: PROFİL MODAL ELEMANLARI VE MANTIĞI (TAMAMEN YENİLENDİ) ===
         const profileModal = document.getElementById('profile-modal');
         const profileOpenBtn = document.getElementById('profile-open-btn');
         const profileSaveBtn = document.getElementById('profile-save-btn');
         const profileCancelBtn = document.getElementById('profile-cancel-btn');
-        const aboutInput = document.getElementById('about-input');
         const profileStatusMessage = document.getElementById('profile-status-message');
+        const fullNameInput = document.getElementById('fullName-input');
+        const usernameDisplay = document.getElementById('username-display');
+        const avatarPlaceholder = document.getElementById('avatar-placeholder');
+        const avatarInput = document.getElementById('avatar-input');
+        const avatarPreview = document.getElementById('avatar-preview');
+        const avatarInitials = document.getElementById('avatar-initials');
+        const aboutInput = document.getElementById('about-input');
+        const cityInput = document.getElementById('city-input');
+        const dobInput = document.getElementById('dob-input');
+        const socialsContainer = document.getElementById('socials-container');
+        const addSocialBtn = document.getElementById('add-social-btn');
 
-        // ====> YENİ: Profil Modal'ını Açma Olayı <====
-        profileOpenBtn.addEventListener('click', () => {
-            // Sunucudan en güncel "hakkımda" bilgisini çekmek en doğrusu,
-            // ama şimdilik elimizdekiyle başlayalım.
-            // İleride buraya bir API isteği eklenebilir.
+        let selectedAvatarFile = null; // Seçilen resim dosyasını saklamak için
+
+        // ================== PROFİL MANTIĞI ==================
+        
+        // --- Yardımcı Fonksiyon: Sosyal Medya Alanı Oluşturma ---
+        const createSocialItem = (social = { platform: 'website', url: '' }) => {
+            const item = document.createElement('div');
+            item.className = 'social-item';
             
-            // aboutInput.value = user.about; // Bu henüz elimizde yok.
-            aboutInput.value = user.about || '';
-            profileModal.style.display = 'flex';
+            const platformSelect = document.createElement('select');
+            ['website', 'linkedin', 'twitter', 'github', 'instagram', 'reddit', 'other'].forEach(p => {
+                const option = document.createElement('option');
+                option.value = p;
+                option.textContent = p.charAt(0).toUpperCase() + p.slice(1);
+                if (p === social.platform) option.selected = true;
+                platformSelect.appendChild(option);
+            });
+         const urlInput = document.createElement('input');
+            urlInput.type = 'text';
+            urlInput.placeholder = 'https://...';
+            urlInput.value = social.url;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.innerHTML = '×'; // Çarpı işareti
+            removeBtn.onclick = () => item.remove();
+
+            item.appendChild(platformSelect);
+            item.appendChild(urlInput);
+            item.appendChild(removeBtn);
+            socialsContainer.appendChild(item);
+        };
+
+         // --- Profil Olay Dinleyicileri ---
+        avatarPlaceholder.addEventListener('click', () => {
+            avatarInput.click();
         });
-        // ====> YENİ: Profil Modal'ını Kapatma Olayı <====
-        profileCancelBtn.addEventListener('click', () => {
-            profileModal.style.display = 'none';
-            profileStatusMessage.textContent = ''; // Mesajı temizle
-        });
-         // ====> YENİ: Profili Kaydetme Olayı <====
-        profileSaveBtn.addEventListener('click', async () => {
-            const newAbout = aboutInput.value;
-
-            try {
-                const response = await fetch('http://localhost:3000/api/profile/update', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}` // Token'ı gönderiyoruz
-                    },
-                    body: JSON.stringify({ about: newAbout })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    profileStatusMessage.style.color = 'green';
-                    profileStatusMessage.textContent = data.message;
-                    user.about = data.user.about;
-                    // Başarılı olunca 1.5 saniye sonra modal'ı kapat
-                    setTimeout(() => {
-                        profileModal.style.display = 'none';
-                        profileStatusMessage.textContent = '';
-                    }, 1500);
-                } else {
-                    profileStatusMessage.style.color = 'red';
-                    profileStatusMessage.textContent = data.message || 'Bir hata oluştu.';
-                }
-            } catch (error) {
-                profileStatusMessage.style.color = 'red';
-                profileStatusMessage.textContent = 'Sunucuya bağlanılamadı.';
+        avatarInput.addEventListener('change', () => {
+            if (avatarInput.files && avatarInput.files[0]) {
+                selectedAvatarFile = avatarInput.files[0];
+                
+                // Seçilen resmi önizlemede göster
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    avatarPreview.src = e.target.result;
+                    avatarPreview.style.display = 'block';
+                    avatarInitials.style.display = 'none';
+                };
+                reader.readAsDataURL(selectedAvatarFile);
             }
         });
+        profileOpenBtn.addEventListener('click', () => {
+            fullNameInput.value = user.fullName || '';
+            usernameDisplay.value = user.username;
+            avatarInitials.textContent = user.username.charAt(0).toUpperCase();
+            aboutInput.value = user.about || '';
+            cityInput.value = user.city || '';
+            // Tarihi YYYY-MM-DD formatına çevir
+            if (user.dateOfBirth) {
+                dobInput.value = new Date(user.dateOfBirth).toISOString().split('T')[0];
+            } else {
+                dobInput.value = '';
+            }
+
+            // Mevcut sosyal medya linklerini temizle ve yeniden oluştur
+            socialsContainer.innerHTML = '';
+            if (user.socials && user.socials.length > 0) {
+                user.socials.forEach(createSocialItem);
+            }
+            if (user.avatar) {
+                // Sunucudaki resmin tam URL'ini oluştur
+                avatarPreview.src = `http://localhost:3000/${user.avatar}`;
+                avatarPreview.style.display = 'block';
+                avatarInitials.style.display = 'none';
+            } else {
+                avatarPreview.style.display = 'none';
+                avatarInitials.style.display = 'block';
+                avatarInitials.textContent = user.username.charAt(0).toUpperCase();
+            }
+            selectedAvatarFile = null; // Her açılışta seçimi sıfırla
+            avatarInput.value = ''; // Input'u temizle
+
+            profileModal.style.display = 'flex';
+        });
+        profileCancelBtn.addEventListener('click', () => {
+            profileModal.style.display = 'none';
+        });
+        addSocialBtn.addEventListener('click', () => createSocialItem());
+        profileSaveBtn.addEventListener('click', async () => {
+            profileStatusMessage.textContent = 'Kaydediliyor...';
+            // Formdaki tüm verileri topla
+            const socialsData = [];
+            document.querySelectorAll('.social-item').forEach(item => {
+                const platform = item.querySelector('select').value;
+                const url = item.querySelector('input').value;
+                if (url) { // Sadece URL girilmişse ekle
+                    socialsData.push({ platform, url });
+                }
+            }); // <--- forEach DÖNGÜSÜNÜN KAPANIŞI BURADA
+
+            const updatedProfileData = {
+                fullName: fullNameInput.value,
+                about: aboutInput.value,
+                city: cityInput.value,
+                dateOfBirth: dobInput.value ? new Date(dobInput.value) : null,
+                socials: socialsData
+            };
+
+            // Sunucuya PUT isteği gönder
+            try {
+                const textUpdateResponse = await fetch('http://localhost:3000/api/profile/update', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                    body: JSON.stringify(updatedProfileData)
+                });
+                if (!textUpdateResponse.ok) throw new Error('Profil bilgileri güncellenemedi.');
+                const textData = await textUpdateResponse.json();
+                Object.assign(user, textData.user); // Yerel veriyi güncelle
+
+                // 2. Eğer yeni bir avatar seçildiyse, onu yükle
+                if (selectedAvatarFile) {
+                    const formData = new FormData();
+                    formData.append('avatar', selectedAvatarFile);
+
+                    const avatarUpdateResponse = await fetch('http://localhost:3000/api/profile/avatar', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${authToken}` },
+                        body: formData // JSON yerine FormData gönderiyoruz
+                    });
+                    if (!avatarUpdateResponse.ok) throw new Error('Avatar yüklenemedi.');
+                    const avatarData = await avatarUpdateResponse.json();
+                    Object.assign(user, avatarData.user); // Yerel veriyi tekrar güncelle
+                }
+
+                // Her şey başarılıysa
+                profileStatusMessage.style.color = 'green';
+                profileStatusMessage.textContent = 'Profil başarıyla güncellendi!';
+                setTimeout(() => {
+                    profileModal.style.display = 'none';
+                    profileStatusMessage.textContent = '';
+                }, 1500);
+
+            } catch (error) {
+                profileStatusMessage.style.color = 'red';
+                profileStatusMessage.textContent = error.message || 'Bir hata oluştu.';
+            }
+        });
+
+        // ================== SOHBET MANTIĞI ==================
         sohbetKartlari.forEach(kart => {
             kart.addEventListener('click', () => {
                 sohbetKartlari.forEach(digerKart => digerKart.classList.remove('aktif'));
@@ -156,14 +271,11 @@ window.addEventListener('DOMContentLoaded', () => {
             if (mesajInput.value) {
                 const aktifOda = aktifSohbetIsmiElementi.innerText;
                 const mesajIcerigi = mesajInput.value;
-                // Sunucuya sadece ham bilgiyi gönder
                 socket.emit('chat message', { room: aktifOda, msg: mesajIcerigi });
-                
-                // Kendi giden mesajımızı kendimiz çiziyoruz
                 mesajBalonuCiz({
                     icerik: mesajIcerigi,
                     gonderen: { id: user.id, username: user.username },
-                    zaman: new Date() // Anlık zamanı kullan
+                    zaman: new Date()
                 });
                 mesajInput.value = '';
             }
@@ -188,29 +300,24 @@ window.addEventListener('DOMContentLoaded', () => {
             console.error('Socket bağlantı hatası:', err.message);
         });
 
-        // Bu yardımcı fonksiyon artık doğru veri yapısını bekliyor
+        // === Yardımcı Fonksiyon: Mesaj Balonu Çizme ===
         function mesajBalonuCiz(mesaj) {
             const mesajDiv = document.createElement('div');
-            // 'gonderen' nesnesinin varlığını kontrol et
             if (!mesaj.gonderen || !mesaj.gonderen.id) {
                 console.error("Hatalı mesaj yapısı:", mesaj);
-                return; // Hatalıysa balonu çizme
+                return;
             }
-
             const tip = mesaj.gonderen.id === user.id ? 'giden' : 'gelen';
             mesajDiv.classList.add('mesaj', tip);
-
             if (tip === 'gelen' && mesaj.gonderen.username) {
                 const senderP = document.createElement('p');
                 senderP.classList.add('mesaj-gonderen');
                 senderP.textContent = mesaj.gonderen.username;
                 mesajDiv.appendChild(senderP);
             }
-
             const contentP = document.createElement('p');
             contentP.textContent = mesaj.icerik;
             mesajDiv.appendChild(contentP);
-
             if (mesaj.zaman) {
                 const timeP = document.createElement('p');
                 timeP.classList.add('mesaj-zamani');
@@ -220,7 +327,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
                 mesajDiv.appendChild(timeP);
             }
-
             mesajlarAlani.appendChild(mesajDiv);
             mesajlarAlani.scrollTop = mesajlarAlani.scrollHeight;
         }
