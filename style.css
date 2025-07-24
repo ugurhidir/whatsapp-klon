@@ -246,3 +246,88 @@ body {
 .mesaj p:not(.mesaj-zamani) {
     margin-bottom: 0;
 }
+/* ======================== */
+/* Profil Butonu Stilleri   */
+/* ======================== */
+.profile-open-btn {
+    background-color: transparent;
+    border: 1px solid #00a884;
+    color: #00a884;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+}
+
+.profile-open-btn:hover {
+    background-color: #00a884;
+    color: white;
+}
+
+
+/* ======================== */
+/* Modal Pencere Stilleri   */
+/* ======================== */
+.modal-overlay {
+    position: fixed; /* Sayfa kaysa bile yerinde kalır */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Yarı şeffaf siyah arka plan */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Her şeyin üzerinde görünmesini sağlar */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d7db;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: inherit; /* body'deki fontu kullansın */
+    resize: vertical; /* Sadece dikeyde boyutlandırılsın */
+}
+
+.modal-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end; /* Butonları sağa yasla */
+    gap: 10px; /* Butonlar arasına boşluk koy */
+}
+
+#profile-save-btn {
+    background-color: #00a884;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#profile-cancel-btn {
+    background-color: #e9edef;
+    color: #3b4a54;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}

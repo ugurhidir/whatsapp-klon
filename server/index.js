@@ -17,7 +17,7 @@ const Message = require('./models/Message');
 app.use(express.json());
 
 // MongoDB'ye bağlanma
-mongoose.connect('mongodb://localhost:27017/whatsapp_klon')
+mongoose.connect('mongodb://192.168.2.110:27017/whatsapp_klon')
   .then(() => console.log('Veritabanı bağlantısı başarılı!'))
   .catch((err) => console.error('Veritabanı bağlantı hatası:', err));
 
@@ -67,13 +67,55 @@ app.post('/api/login', async (req, res) => {
             message: "Giriş başarılı!", 
             token: token, 
             userId: user._id,
-            username: user.username 
+            user: { // Artık bir "user" nesnesi gönderiyoruz
+                    id: user._id,
+                    username: user.username,
+                    about: user.about // ABOUT BİLGİSİNİ EKLE
+                }
         });
     } catch (error) {
         console.error("Giriş hatası:", error);
         res.status(500).json({ message: "Giriş sırasında bir hata oluştu." });
     }
 });
+
+// ================== PROFİL GÜNCELLEME ROTASI ==================
+app.put('/api/profile/update', async (req, res) => {
+    try {
+        // 1. İsteği yapan kullanıcının kimliğini doğrula (JWT'den)
+        // Bu rotaya erişmeden önce bir "auth middleware" kullanmak en doğrusudur,
+        // ama şimdilik JWT'yi manuel olarak kontrol edelim.
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+        if (token == null) return res.sendStatus(401); // Token yoksa yetkisiz
+
+        jwt.verify(token, 'GIZLI_ANAHTARINIZ_BURAYA', async (err, userPayload) => {
+            if (err) return res.sendStatus(403); // Token geçersizse yasak
+
+            // 2. Güncellenecek veriyi isteğin gövdesinden al
+            const { about } = req.body;
+
+            // 3. Kullanıcıyı bul ve "about" alanını güncelle
+            const updatedUser = await User.findByIdAndUpdate(
+                userPayload.userId,      // Hangi kullanıcı güncellenecek
+                { about: about },        // Hangi alan güncellenecek
+                { new: true }            // Güncellenmiş dökümanı geri döndür
+            );
+
+            if (!updatedUser) {
+                return res.status(404).json({ message: 'Kullanıcı bulunamadı.' });
+            }
+
+            // 4. Başarılı olduğuna dair cevap gönder
+            res.status(200).json({ message: 'Profil başarıyla güncellendi.', user: updatedUser });
+        });
+    } catch (error) {
+        console.error("Profil güncelleme hatası:", error);
+        res.status(500).json({ message: "Profil güncellenirken bir hata oluştu." });
+    }
+});
+
 
 // ================== SOCKET.IO YETKİLENDİRME (MIDDLEWARE) ==================
 io.use((socket, next) => {

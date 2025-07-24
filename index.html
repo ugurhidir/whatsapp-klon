@@ -40,8 +40,7 @@
         <!-- Sol Panel (Sohbet Listesi Bölümü) -->
         <div class="sol-panel">
             <header class="panel-header">
-                <!-- Buraya ileride profil resmi gibi şeyler gelecek -->
-                <p>Profil</p>
+                <button class="profile-open-btn" id="profile-open-btn">Profil</button>
             </header>
             <div class="sohbet-listesi">
                 <!-- Bunlar statik, örnek sohbetler -->
@@ -97,6 +96,22 @@
         </div>
 
     </div>
+    <!-- ================== YENİ: PROFİL MODAL'I ================== -->
+    <div class="modal-overlay" id="profile-modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Profilim</h3>
+            <div class="input-group">
+                <label for="about-input">Hakkımda</label>
+                <textarea id="about-input" rows="4"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button id="profile-save-btn">Kaydet</button>
+                <button id="profile-cancel-btn">İptal</button>
+            </div>
+             <p class="status-message" id="profile-status-message"></p>
+        </div>
+    </div>
+    <!-- ================== PROFİL MODAL'I SONU ================== -->
 
     <!-- Script etiketleri en sonda kalmaya devam ediyor -->
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>

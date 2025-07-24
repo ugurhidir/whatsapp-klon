@@ -58,7 +58,7 @@ window.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 token = data.token;
                 // Dışarıdaki currentUser değişkeninin değerini güncelle
-                currentUser = { id: data.userId, username: data.username };
+                currentUser = data.user;
                 
                 loginContainer.style.display = 'none';
                 appContainer.style.display = 'flex';
@@ -82,7 +82,62 @@ window.addEventListener('DOMContentLoaded', () => {
         const mesajlarAlani = document.querySelector('.mesajlar-alani');
         const mesajFormu = document.querySelector('.mesaj-yazma-formu');
         const mesajInput = mesajFormu.querySelector('input');
+        const profileModal = document.getElementById('profile-modal');
+        const profileOpenBtn = document.getElementById('profile-open-btn');
+        const profileSaveBtn = document.getElementById('profile-save-btn');
+        const profileCancelBtn = document.getElementById('profile-cancel-btn');
+        const aboutInput = document.getElementById('about-input');
+        const profileStatusMessage = document.getElementById('profile-status-message');
 
+        // ====> YENİ: Profil Modal'ını Açma Olayı <====
+        profileOpenBtn.addEventListener('click', () => {
+            // Sunucudan en güncel "hakkımda" bilgisini çekmek en doğrusu,
+            // ama şimdilik elimizdekiyle başlayalım.
+            // İleride buraya bir API isteği eklenebilir.
+            
+            // aboutInput.value = user.about; // Bu henüz elimizde yok.
+            aboutInput.value = user.about || '';
+            profileModal.style.display = 'flex';
+        });
+        // ====> YENİ: Profil Modal'ını Kapatma Olayı <====
+        profileCancelBtn.addEventListener('click', () => {
+            profileModal.style.display = 'none';
+            profileStatusMessage.textContent = ''; // Mesajı temizle
+        });
+         // ====> YENİ: Profili Kaydetme Olayı <====
+        profileSaveBtn.addEventListener('click', async () => {
+            const newAbout = aboutInput.value;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/profile/update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}` // Token'ı gönderiyoruz
+                    },
+                    body: JSON.stringify({ about: newAbout })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    profileStatusMessage.style.color = 'green';
+                    profileStatusMessage.textContent = data.message;
+                    user.about = data.user.about;
+                    // Başarılı olunca 1.5 saniye sonra modal'ı kapat
+                    setTimeout(() => {
+                        profileModal.style.display = 'none';
+                        profileStatusMessage.textContent = '';
+                    }, 1500);
+                } else {
+                    profileStatusMessage.style.color = 'red';
+                    profileStatusMessage.textContent = data.message || 'Bir hata oluştu.';
+                }
+            } catch (error) {
+                profileStatusMessage.style.color = 'red';
+                profileStatusMessage.textContent = 'Sunucuya bağlanılamadı.';
+            }
+        });
         sohbetKartlari.forEach(kart => {
             kart.addEventListener('click', () => {
                 sohbetKartlari.forEach(digerKart => digerKart.classList.remove('aktif'));
@@ -169,5 +224,7 @@ window.addEventListener('DOMContentLoaded', () => {
             mesajlarAlani.appendChild(mesajDiv);
             mesajlarAlani.scrollTop = mesajlarAlani.scrollHeight;
         }
+        
     }
+    
 });
